@@ -26,3 +26,6 @@ Route::get('/vege_home', function () {
         'products' => VegeProduct::all()
     ]);
 })->name('home');
+
+Route::post('/cart/add/{productId}', [VegeUserController::class, 'addToCart'])->name('cart.add');
+Route::get('/cart', [VegeUserController::class, 'viewCart'])->name('cart.view');

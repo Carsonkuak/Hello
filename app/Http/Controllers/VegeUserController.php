@@ -9,7 +9,6 @@
  use Illuminate\Support\Facades\Mail;
  use Illuminate\Validation\Rule;
 
-
  class VegeUserController extends Controller
  {
      public function showRegisterForm()
@@ -20,7 +19,7 @@
      public function register(Request $request)
      {
          $validatedData = $request->validate([
-             'username' =>'required|unique:users,username',
+             'username' => 'required|unique:users,username',
              'email' => ['required', Rule::unique('users', 'email')],
              'password' => 'required|min:6',
          ]);
@@ -40,7 +39,7 @@
                      ->subject('Verify Your Email');
          });
 
-         return redirect()->route('verify.otp');
+         return redirect()->route('verify.otp')->with('message', 'OTP sent to your email. Please check your inbox.');
      }
 
      public function showVerifyOtpForm()
@@ -57,16 +56,15 @@
          $user = User::where('otp', $validatedData['otp'])->first();
 
          if ($user) {
-             $user->is_verified = true;
+             $user->is_verified = 1;
              $user->otp = null;
              $user->save();
 
              Auth::login($user);
 
-             return redirect()->route('home');
+             return redirect()->route('home')->with('success', 'Your account has been successfully verified!');
          }
-
-         return back()->withErrors(['otp' => 'Invalid OTP.']);
+         return back()->withErrors(['otp' => 'Invalid OTP. Please try again.']);
      }
 
      public function showLoginForm()
@@ -94,7 +92,7 @@
      public function logout()
      {
          Auth::logout();
-         return redirect()->route('vegetables.login');
+         return redirect()->route('vege_login');
      }
 
      public function showProducts()
@@ -104,16 +102,17 @@
      }
 
      public function showProductDetails($id)
-    {
-        $product = VegeProduct::select('image', 'p_name', 'details', 'mass', 'price', 'created_at', 'updated_at')
-                            ->where('id', $id)
-                            ->first();
+     {
+         $product = VegeProduct::select('image', 'p_name', 'details', 'mass', 'price', 'created_at', 'updated_at')
+                             ->where('id', $id)
+                             ->first();
 
-        if (!$product) {
-            abort(404, 'Product not found');
-        }
+         if (!$product) {
+             abort(404, 'Product not found');
+         }
 
-        return view('vegetables.product_details', compact('product'));
-    }
+         return view('vegetables.product_detail', compact('product'));
+     }
 
+     
  }

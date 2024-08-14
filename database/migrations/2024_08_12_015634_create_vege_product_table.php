@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('vege_product', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('p_id');
+            $table->string('image')->nullable();
             $table->string('p_name');
             $table->text('details');
             $table->decimal('mass', 8, 2);
@@ -28,6 +29,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        
         Schema::dropIfExists('vege_product');
     }
 };

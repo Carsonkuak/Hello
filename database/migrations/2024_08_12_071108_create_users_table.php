@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('otp')->nullable();  // for storing OTP
             $table->boolean('is_verified')->default(false);  // to check if the email is verified
         });
+        
     }
 
     /**
